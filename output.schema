@@ -1,0 +1,38 @@
+{
+    "function": [
+        {
+            "name": "attack-resnet50_v2-fgsm",
+            "option_tags": []
+        },
+        {
+            "name": "attack-resnet50_v2-deepfool",
+            "option_tags": []
+        },
+        {
+            "name": "attack-resnet50_v2-carlini_wagner",
+            "option_tags": []
+        },
+        {
+            "name": "defend-jpeg",
+            "option_tags": []
+        },
+        {
+            "name": "defend-slq",
+            "option_tags": []
+        },
+        {
+            "name": "defend-median_filter",
+            "option_tags": []
+        },
+        {
+            "name": "defend-tv_bregman",
+            "option_tags": []
+        },
+        {
+            "name": "evaluate-resnet50_v2",
+            "option_tags": [
+                {"tag_name": "accuracy", "type": "float"}
+            ]
+        }
+    ]
+}

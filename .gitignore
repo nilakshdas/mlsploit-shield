@@ -1,0 +1,12 @@
+.DS_Store
+
+*.pyc
+
+/scratch/*
+!/scratch/.keep
+
+/input/*
+!/input/.keep
+
+/output/*
+!/output/.keep

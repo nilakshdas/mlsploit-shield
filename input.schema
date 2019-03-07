@@ -1,0 +1,60 @@
+{
+    "function": [
+        {
+            "name": "attack-resnet50_v2-fgsm",
+            "option": [
+                {"name": "epsilon", "type": "int", "required": true}
+            ],
+            "ftype": "zip",
+            "mtype": null
+        },
+        {
+            "name": "attack-resnet50_v2-deepfool",
+            "option": [],
+            "ftype": "zip",
+            "mtype": null
+        },
+        {
+            "name": "attack-resnet50_v2-carlini_wagner",
+            "option": [],
+            "ftype": "zip",
+            "mtype": null
+        },
+        {
+            "name": "defend-jpeg",
+            "option": [
+                {"name": "quality", "type": "int", "required": true}
+            ],
+            "ftype": "zip",
+            "mtype": null
+        },
+        {
+            "name": "defend-slq",
+            "option": [],
+            "ftype": "zip",
+            "mtype": null
+        },
+        {
+            "name": "defend-median_filter",
+            "option": [
+                {"name": "size", "type": "int", "required": true}
+            ],
+            "ftype": "zip",
+            "mtype": null
+        },
+        {
+            "name": "defend-tv_bregman",
+            "option": [
+                {"name": "weight", "type": "int", "required": true}
+            ],
+            "ftype": "zip",
+            "mtype": null
+        },
+        {
+            "name": "evaluate-resnet50_v2",
+            "option": [],
+            "ftype": "zip",
+            "mtype": null
+        }
+    ]
+}

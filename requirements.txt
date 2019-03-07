@@ -1,0 +1,6 @@
+addict==2.1.2
+cleverhans==3.0.1
+numpy==1.14.3
+pillow==3.1.0
+scikit-image==0.13.0
+tensorflow==1.10.0
