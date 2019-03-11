@@ -61,8 +61,10 @@ def create_dataset_from_zipfile(input_filepath):
 
 
 def save_output_zipfile(
-        iterator, output_zip_filepath,
+        iterator, output_file, output_dir,
         has_prediction=False, sess=None):
+
+    output_zip_filepath = os.path.join(output_dir, output_file)
 
     if sess is None:
         sess = tf.get_default_session()
@@ -105,25 +107,24 @@ def save_output_zipfile(
             except tf.errors.OutOfRangeError:
                 break
 
-        temp_labels_filepath, temp_predictions_filepath = \
-            os.path.join(temp_output_dir, LABELS_CSV_FILENAME), \
-            os.path.join(temp_output_dir, PREDICTIONS_CSV_FILENAME)
+        temp_labels_filepath = \
+            os.path.join(temp_output_dir, LABELS_CSV_FILENAME)
 
         with open(temp_labels_filepath, 'w') as temp_labels_file:
             writer = csv.writer(temp_labels_file)
             for k, v in all_labels.items():
                 writer.writerow([k, v])
-        output_zip.write(temp_labels_filepath,
-                         LABELS_CSV_FILENAME)
+        output_zip.write(temp_labels_filepath, LABELS_CSV_FILENAME)
 
-        if has_prediction:
-            with open(temp_predictions_filepath, 'w') as temp_predictions_file:
-                writer = csv.writer(temp_predictions_file)
-                for k, v in all_predictions.items():
-                    writer.writerow([k, v])
-            output_zip.write(temp_predictions_filepath,
-                             PREDICTIONS_CSV_FILENAME)
+    preds_filepath = None
+    if has_prediction:
+        preds_filepath = os.path.join(
+            output_dir, output_file+'-'+PREDICTIONS_CSV_FILENAME)
+        with open(preds_filepath, 'w') as preds_file:
+            writer = csv.writer(preds_file)
+            for k, v in all_predictions.items():
+                writer.writerow([k, v])
 
     shutil.rmtree(temp_output_dir)
 
-    return accuracy
+    return preds_filepath, accuracy

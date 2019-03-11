@@ -1,38 +1,57 @@
 {
-    "function": [
+    "functions": [
         {
-            "name": "attack-resnet50_v2-fgsm",
-            "option_tags": []
+            "name": "attack[FGSM]",
+            "tags": [],
+            "files_modified": true,
+            "files_extra": false
         },
         {
-            "name": "attack-resnet50_v2-deepfool",
-            "option_tags": []
+            "name": "attack[DeepFool]",
+            "tags": [],
+            "files_modified": true,
+            "files_extra": false
         },
         {
-            "name": "attack-resnet50_v2-carlini_wagner",
-            "option_tags": []
+            "name": "attack[CarliniWagner]",
+            "tags": [],
+            "files_modified": true,
+            "files_extra": false
         },
         {
-            "name": "defend-jpeg",
-            "option_tags": []
+            "name": "defend[JPEG]",
+            "tags": [],
+            "files_modified": true,
+            "files_extra": false
         },
         {
-            "name": "defend-slq",
-            "option_tags": []
+            "name": "defend[SLQ]",
+            "tags": [],
+            "files_modified": true,
+            "files_extra": false
         },
         {
-            "name": "defend-median_filter",
-            "option_tags": []
+            "name": "defend[MedianFilter]",
+            "tags": [],
+            "files_modified": true,
+            "files_extra": false
         },
         {
-            "name": "defend-tv_bregman",
-            "option_tags": []
+            "name": "defend[TV-Bregman]",
+            "tags": [],
+            "files_modified": true,
+            "files_extra": false
         },
         {
-            "name": "evaluate-resnet50_v2",
-            "option_tags": [
-                {"tag_name": "accuracy", "type": "float"}
-            ]
+            "name": "evaluate",
+            "tags": [
+                {
+                    "name": "accuracy",
+                    "type": "float"
+                }
+            ],
+            "files_modified": false,
+            "files_extra": true
         }
     ]
 }

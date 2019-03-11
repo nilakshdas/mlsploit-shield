@@ -17,30 +17,38 @@ import opts
 def _load_context(context_filepath):
     context = json.load(open(context_filepath))
 
-    assert all(input_file.endswith('.zip')
-               for input_file in context['files']), \
-        'Input files should be .zip files'
+    # assert all(input_file.endswith('.zip')
+    #            for input_file in context['files']), \
+    #     'Input files should be .zip files'
 
     # identify action and action type
     if 'attack' in context['name']:
         context['action'] = 'attack'
 
-        attack = context['name'].split('-')[-1]
-        attack = {'fgsm': 'fgsm',
-                  'deepfool': 'df',
-                  'carlini_wagner': 'cwl2'
+        func_name = context['name']
+        attack = func_name[func_name.find('[')+1: func_name.find(']')]
+        attack = {'FGSM': 'fgsm',
+                  'DeepFool': 'df',
+                  'CarliniWagner': 'cwl2'
                   }[attack]
         context['action_type'] = attack
 
         # for FGSM, recalculate 'eps' from 'epsilon'
         if attack == 'fgsm':
-            eps = context['option']['epsilon']
-            context['option']['eps'] = 2. * eps / 255.
-            del context['option']['epsilon']
+            eps = context['options']['epsilon']
+            context['options']['eps'] = 2. * eps / 255.
+            del context['options']['epsilon']
 
     elif 'defend' in context['name']:
         context['action'] = 'defend'
-        context['action_type'] = context['name'].split('-')[-1]
+        func_name = context['name']
+        defense = func_name[func_name.find('[')+1: func_name.find(']')]
+        defense = {'JPEG': 'jpeg',
+                   'SLQ': 'slq',
+                   'MedianFilter': 'median_filter',
+                   'TV-Bregman': 'tv_bregman'
+                   }[defense]
+        context['action_type'] = defense
 
     elif 'evaluate' in context['name']:
         context['action'] = 'evaluate'
@@ -50,8 +58,12 @@ def _load_context(context_filepath):
         raise ValueError('Unknown action in input.json')
 
     # identify model
-    if 'resnet50_v2' in context['name']:
-        context['model'] = 'resnet_50_v2'
+    if 'model' in context['options']:
+        context['model'] = {'ResNet50-v2': 'resnet_50_v2',
+                            'Inception-v4': 'inception_v4'
+                            }[context['options']['model']]
+    else:
+        context['model'] = None
 
     print('Performing %s with %s...' % (
         context['action'],
@@ -70,12 +82,18 @@ def main():
 
     output_data = dict()
     output_data['name'] = context.name
-    output_data['model'] = None
     output_data['files'] = list()
-    output_data['status'] = list()
-    output_data['results'] = list()
+    output_data['tags'] = list()
+    output_data['files_modified'] = list()
+    output_data['files_extra'] = list()
 
-    for input_file in context.files:
+    for input_file, tags in zip(context.files, context.tags):
+        if 'ftype' in tags and tags['ftype'] == 'predictions':
+            continue
+
+        assert input_file.endswith('.zip'), \
+            'Input files should be .zip files'
+
         graph = tf.Graph()
         with graph.as_default():
             dataset = create_dataset_from_zipfile(
@@ -90,7 +108,7 @@ def main():
                 attack = context.action_type
                 attack_class = opts.attack_class_map[attack]
                 attack_options = opts.attack_options_map[attack].copy()
-                attack_options.update(context.option)
+                attack_options.update(context.options)
 
                 dataset = dataset.map(
                     perform_attack(model, attack_class, attack_options))
@@ -100,7 +118,7 @@ def main():
                 defense_fn = opts.defense_fn_map[defense]
                 is_tf_defense = defense in opts.tf_defenses
                 defense_options = opts.defense_options_map[defense].copy()
-                defense_options.update(context.option)
+                defense_options.update(context.options)
 
                 dataset = dataset.map(
                     perform_defense(defense_fn, defense_options,
@@ -131,20 +149,21 @@ def main():
                         CHECKPOINTS_DIR, opts.model_checkpoint_map[model_name])
                     model.load_weights(model_checkpoint_path, sess=sess)
 
-                output_zip_filepath = os.path.join(OUTPUT_DIR, input_file)
-                accuracy = save_output_zipfile(iterator, output_zip_filepath,
-                                               has_prediction=has_prediction)
-
-        output_data['files'].append(input_file)
-        output_data['status'].append('success')
-        output_data['results'].append({'accuracy': accuracy.evaluate()}
-                                      if has_prediction else {})
+                preds_filepath, accuracy = save_output_zipfile(
+                    iterator, input_file,
+                    OUTPUT_DIR, sess=sess,
+                    has_prediction=has_prediction)
 
         if has_prediction:
-            print()
-            print('-' * 20)
-            print(input_file)
-            print('Accuracy: %0.4f' % accuracy.evaluate())
+            preds_file = os.path.basename(preds_filepath)
+            output_data['files'].append(preds_file)
+            output_data['files_extra'].append(preds_file)
+            output_data['tags'].append({'accuracy': accuracy.evaluate()})
+
+        else:
+            output_data['files'].append(input_file)
+            output_data['files_modified'].append(input_file)
+            output_data['tags'].append({})
 
         tf.reset_default_graph()
 

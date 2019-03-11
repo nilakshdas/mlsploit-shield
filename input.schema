@@ -1,60 +1,147 @@
 {
-    "function": [
+    "functions": [
         {
-            "name": "attack-resnet50_v2-fgsm",
-            "option": [
-                {"name": "epsilon", "type": "int", "required": true}
+            "name": "attack[FGSM]",
+            "options": [
+                {
+                    "name": "model",
+                    "type": "enum",
+                    "required": true,
+                    "values": [
+                        "ResNet50-v2",
+                        "Inception-v4"
+                    ]
+                },
+                {
+                    "name": "epsilon",
+                    "type": "int",
+                    "required": true
+                }
             ],
-            "ftype": "zip",
-            "mtype": null
+            "extensions": [
+                {
+                     "ftype": null,
+                     "extension": "zip"
+                }
+            ]
         },
         {
-            "name": "attack-resnet50_v2-deepfool",
-            "option": [],
-            "ftype": "zip",
-            "mtype": null
-        },
-        {
-            "name": "attack-resnet50_v2-carlini_wagner",
-            "option": [],
-            "ftype": "zip",
-            "mtype": null
-        },
-        {
-            "name": "defend-jpeg",
-            "option": [
-                {"name": "quality", "type": "int", "required": true}
+            "name": "attack[DeepFool]",
+            "options": [
+                {
+                    "name": "model",
+                    "type": "enum",
+                    "required": true,
+                    "values": [
+                        "ResNet50-v2",
+                        "Inception-v4"
+                    ]
+                }
             ],
-            "ftype": "zip",
-            "mtype": null
+            "extensions": [
+                {
+                     "ftype": null,
+                     "extension": "zip"
+                }
+            ]
         },
         {
-            "name": "defend-slq",
-            "option": [],
-            "ftype": "zip",
-            "mtype": null
-        },
-        {
-            "name": "defend-median_filter",
-            "option": [
-                {"name": "size", "type": "int", "required": true}
+            "name": "attack[CarliniWagner]",
+            "options": [
+                {
+                    "name": "model",
+                    "type": "enum",
+                    "required": true,
+                    "values": [
+                        "ResNet50-v2",
+                        "Inception-v4"
+                    ]
+                }
             ],
-            "ftype": "zip",
-            "mtype": null
+            "extensions": [
+                {
+                     "ftype": null,
+                     "extension": "zip"
+                }
+            ]
         },
         {
-            "name": "defend-tv_bregman",
-            "option": [
-                {"name": "weight", "type": "int", "required": true}
+            "name": "defend[JPEG]",
+            "options": [
+                {
+                    "name": "quality",
+                    "type": "int",
+                    "required": true
+                }
             ],
-            "ftype": "zip",
-            "mtype": null
+            "extensions": [
+                {
+                     "ftype": null,
+                     "extension": "zip"
+                }
+            ]
         },
         {
-            "name": "evaluate-resnet50_v2",
-            "option": [],
-            "ftype": "zip",
-            "mtype": null
+            "name": "defend[SLQ]",
+            "options": [],
+            "extensions": [
+                {
+                     "ftype": null,
+                     "extension": "zip"
+                }
+            ]
+        },
+        {
+            "name": "defend[MedianFilter]",
+            "options": [
+                {
+                    "name": "size",
+                    "type": "int",
+                    "required": true
+                }
+            ],
+            "extensions": [
+                {
+                     "ftype": null,
+                     "extension": "zip"
+                }
+            ]
+        },
+        {
+            "name": "defend[TV-Bregman]",
+            "options": [
+                {
+                    "name": "weight",
+                    "type": "int",
+                    "required": true
+                }
+            ],
+            "extensions": [
+                {
+                     "ftype": null,
+                     "extension": "zip"
+                }
+            ]
+        },
+        {
+            "name": "evaluate",
+            "options": [
+                {
+                    "name": "model",
+                    "type": "enum",
+                    "required": true,
+                    "values": [
+                        "ResNet50-v2",
+                        "Inception-v4"
+                    ]
+                }
+            ],
+            "extensions": [
+                {
+                     "ftype": null,
+                     "extension": "zip"
+                }
+            ]
         }
     ]
 }
